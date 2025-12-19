@@ -1,6 +1,12 @@
-import logo from './logo.svg';
 import './App.css';
-import { Route } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
+import { Layout } from './layouts/layout';
+import { Home } from './pages/home';
+import { Map } from './pages/map';
+import { Login } from './pages/login';
+import { MemberAdd } from './pages/member/add';
+import { MemberDel } from './pages/member/del';
+
 
 function App() {
   return (

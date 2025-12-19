@@ -1,12 +1,15 @@
 import React from 'react';
+import './Sidebar.css';
 
 const Sidebar = () => {
-    <sidebar className="sidebar">
-        <nav>
-            <a href="/map">Map</a>
-            <a href="/login">LOGIN</a>
-        </nav>
-    </sidebar>
+    return (
+        <aside className="sidebar">
+            <nav>
+                <a href="/map">Map</a>
+                <a href="/login">LOGIN</a>
+            </nav>
+        </aside>
+    );
 }
 
 export default Sidebar;

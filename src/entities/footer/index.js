@@ -1,9 +1,12 @@
 import React from 'react';
+import './Footer.css';
 
 const Footer = () => {
-    <footer className="footer">
-        <p>시험 제작용</p>
-    </footer>
+    return (
+        <footer className="footer">
+            <p>시험 제작용</p>
+        </footer>
+    );
 };
 
 export default Footer; 

@@ -1,0 +1,31 @@
+/* Layout 스타일 */
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.layout-body {
+  display: flex;
+  flex: 1;
+  position: relative;
+}
+
+.layout-main {
+  flex: 1;
+  padding: 2rem;
+  margin-left: 252px;
+  transition: margin-left 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .layout-main {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .layout-main {
+    padding: 1rem;
+  }
+}
