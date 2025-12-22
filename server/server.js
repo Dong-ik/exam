@@ -14,13 +14,10 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use('/images', express.static(path.join(__dirname, '..', 'images')));
 
 // 라우트 임포트
-const warehouseRoutes = require('./routes/warehouse');
-const itemRoutes = require('./routes/item');
-const breakdownRoutes = require('./routes/breakdown');
-const breakdownDetailRoutes = require('./routes/breakdownDetail');
-const uploadRoutes = require('./routes/upload');
+const memberRoutes = require('./routes/member');
 
 // API 라우트 마운트
+app.use('/api/member', memberRoutes);
 //app.use('/api/warehouse', warehouseRoutes);
 
 // 헬스 체크

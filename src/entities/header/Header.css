@@ -20,6 +20,7 @@
 .header nav {
   display: flex;
   gap: 1.5rem;
+  align-items: center;
 }
 
 .header nav a {
@@ -38,6 +39,31 @@
 
 .header nav a:active {
   background: #e0e0e0;
+}
+
+.user-name {
+  color: #333;
+  font-weight: 600;
+  padding: 0.5rem 0.5rem;
+}
+
+.auth-button {
+  background: #4a90e2;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.auth-button:hover {
+  background: #357abd;
+}
+
+.auth-button:active {
+  background: #2968a8;
 }
 
 @media (max-width: 768px) {
