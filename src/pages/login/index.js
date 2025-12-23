@@ -78,15 +78,27 @@ export const Login = () => {
                 </form>
                 {/* 소셜 로그인 버튼 영역 */}
                 <div className="social-buttons">
-                    <button className="social-button naver">
+                    <button 
+                        type="button"
+                        className="social-button naver"
+                        onClick={() => window.location.href = 'http://localhost:5000/api/auth/naver'}
+                    >
                         <img src="https://static.nid.naver.com/oauth/small_g_in.PNG" alt="네이버" width={24} height={24} />
                         네이버로 로그인
                     </button>
-                    <button className="social-button kakao">
+                    <button 
+                        type="button"
+                        className="social-button kakao"
+                        onClick={() => window.location.href = 'http://localhost:5000/api/auth/kakao'}
+                    >
                         <img src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_small.png" alt="카카오" width={24} height={24} />
                         카카오로 로그인
                     </button>
-                    <button className="social-button google">
+                    <button 
+                        type="button"
+                        className="social-button google"
+                        onClick={() => window.location.href = 'http://localhost:5000/api/auth/google'}
+                    >
                         <img src="https://developers.google.com/identity/images/g-logo.png" alt="구글" width={24} height={24} />
                         구글로 로그인
                     </button>

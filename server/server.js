@@ -1,23 +1,45 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const session = require('express-session');
+const passport = require('passport');
 require('dotenv').config();
 
 const app = express();
 
 // 미들웨어
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
+// 세션 설정
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'your-secret-key-change-this',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: false, // https를 사용할 경우 true로 변경
+    maxAge: 24 * 60 * 60 * 1000 // 24시간
+  }
+}));
+
+// Passport 초기화
+app.use(passport.initialize());
+app.use(passport.session());
 
 // 정적 파일 서빙 (이미지 폴더)
 app.use('/images', express.static(path.join(__dirname, '..', 'images')));
 
 // 라우트 임포트
 const memberRoutes = require('./routes/member');
+const authRoutes = require('./routes/auth');
 
 // API 라우트 마운트
 app.use('/api/member', memberRoutes);
+app.use('/api/auth', authRoutes);
 //app.use('/api/warehouse', warehouseRoutes);
 
 // 헬스 체크
