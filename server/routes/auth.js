@@ -10,14 +10,16 @@ const db = require('../config/db');
 passport.use(new NaverStrategy({
     clientID: process.env.NAVER_CLIENT_ID,
     clientSecret: process.env.NAVER_CLIENT_SECRET,
-    callbackURL: process.env.NAVER_CALLBACK_URL || 'http://localhost:5000/api/auth/naver/callback'
+    callbackURL: process.env.NAVER_CALLBACK_URL || 'http://localhost:5000/api/auth/naver/callback',
+    profileFields: ['id', 'email', 'name']
   },
   async function(accessToken, refreshToken, profile, done) {
     try {
       console.log('네이버 프로필:', profile);
       
       // 네이버 프로필 정보 추출
-      const { id, email, name } = profile._json;
+      const { id, email, name, nickname } = profile._json;
+      const userName = name || nickname || profile.displayName;
       
       // DB에서 해당 네이버 ID로 사용자 조회
       const [existingUsers] = await db.query(
@@ -34,7 +36,7 @@ passport.use(new NaverStrategy({
         const [result] = await db.query(
           `INSERT INTO member (email, member_name, naver_id, password, national, gender, birth, phone_agency, phone, member_address, created_date) 
            VALUES (?, ?, ?, '', '', '', NULL, '', '', '', NOW())`,
-          [email || `naver_${id}@temp.com`, name || '네이버사용자', id]
+          [email || `naver_${id}@temp.com`, userName || '네이버사용자', id]
         );
 
         // 생성된 사용자 정보 조회
@@ -86,7 +88,7 @@ passport.use(new KakaoStrategy({
 
         // 생성된 사용자 정보 조회
         const [newUsers] = await db.query(
-          'SELECT * FROM member WHERE id = ?',
+          'SELECT * FROM member WHERE member_num = ?',
           [result.insertId]
         );
 
@@ -132,7 +134,7 @@ passport.use(new GoogleStrategy({
 
         // 생성된 사용자 정보 조회
         const [newUsers] = await db.query(
-          'SELECT * FROM member WHERE id = ?',
+          'SELECT * FROM member WHERE member_num = ?',
           [result.insertId]
         );
 
@@ -147,13 +149,13 @@ passport.use(new GoogleStrategy({
 
 // 세션 직렬화
 passport.serializeUser((user, done) => {
-  done(null, user.id);
+  done(null, user.member_num);
 });
 
 // 세션 역직렬화
-passport.deserializeUser(async (id, done) => {
+passport.deserializeUser(async (member_num, done) => {
   try {
-    const [users] = await db.query('SELECT * FROM member WHERE id = ?', [id]);
+    const [users] = await db.query('SELECT * FROM member WHERE member_num = ?', [member_num]);
     done(null, users[0]);
   } catch (error) {
     done(error);
@@ -171,7 +173,7 @@ router.get('/naver/callback',
   (req, res) => {
     // 로그인 성공
     const user = {
-      id: req.user.id,
+      member_num: req.user.member_num,
       email: req.user.email,
       member_name: req.user.member_name
     };
@@ -193,7 +195,7 @@ router.get('/kakao/callback',
   (req, res) => {
     // 로그인 성공
     const user = {
-      id: req.user.id,
+      member_num: req.user.member_num,
       email: req.user.email,
       member_name: req.user.member_name
     };
@@ -217,7 +219,7 @@ router.get('/google/callback',
   (req, res) => {
     // 로그인 성공
     const user = {
-      id: req.user.id,
+      member_num: req.user.member_num,
       email: req.user.email,
       member_name: req.user.member_name
     };

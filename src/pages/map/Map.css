@@ -1,0 +1,24 @@
+.map-page {
+    padding: 20px;
+    width: 100%;
+    height: 100%;
+}
+
+.map-page h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.map-container {
+    width: 100%;
+    height: 600px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+    .map-container {
+        height: 400px;
+    }
+}
