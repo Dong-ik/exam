@@ -10,8 +10,7 @@ const db = require('../config/db');
 passport.use(new NaverStrategy({
     clientID: process.env.NAVER_CLIENT_ID,
     clientSecret: process.env.NAVER_CLIENT_SECRET,
-    callbackURL: process.env.NAVER_CALLBACK_URL || 'http://localhost:5000/api/auth/naver/callback',
-    profileFields: ['id', 'email', 'name']
+    callbackURL: process.env.NAVER_CALLBACK_URL || 'http://localhost:5000/api/auth/naver/callback'
   },
   async function(accessToken, refreshToken, profile, done) {
     try {
@@ -19,7 +18,9 @@ passport.use(new NaverStrategy({
       
       // 네이버 프로필 정보 추출
       const { id, email, name, nickname } = profile._json;
-      const userName = name || nickname || profile.displayName;
+      const userName = name || nickname || '네이버사용자';
+      
+      console.log('추출된 이름:', userName, '(name:', name, ', nickname:', nickname, ')');
       
       // DB에서 해당 네이버 ID로 사용자 조회
       const [existingUsers] = await db.query(
@@ -35,13 +36,13 @@ passport.use(new NaverStrategy({
         // 네이버 로그인으로 가입하는 경우 기본값 설정
         const [result] = await db.query(
           `INSERT INTO member (email, member_name, naver_id, password, national, gender, birth, phone_agency, phone, member_address, created_date) 
-           VALUES (?, ?, ?, '', '', '', NULL, '', '', '', NOW())`,
-          [email || `naver_${id}@temp.com`, userName || '네이버사용자', id]
+           VALUES (?, ?, ?, '', '', '', NULL, '', NULL, '', NOW())`,
+          [email || `naver_${id}@temp.com`, userName, id]
         );
 
         // 생성된 사용자 정보 조회
         const [newUsers] = await db.query(
-          'SELECT * FROM member WHERE id = ?',
+          'SELECT * FROM member WHERE member_num = ?',
           [result.insertId]
         );
 
@@ -57,7 +58,7 @@ passport.use(new NaverStrategy({
 // 카카오 Passport 설정
 passport.use(new KakaoStrategy({
     clientID: process.env.KAKAO_CLIENT_ID,
-    clientSecret: process.env.KAKAO_CLIENT_SECRET || '', // 카카오는 선택적
+    //clientSecret: process.env.KAKAO_CLIENT_SECRET,
     callbackURL: process.env.KAKAO_CALLBACK_URL || 'http://localhost:5000/api/auth/kakao/callback'
   },
   async function(accessToken, refreshToken, profile, done) {
@@ -128,7 +129,7 @@ passport.use(new GoogleStrategy({
         // 신규 사용자 - 회원가입 처리
         const [result] = await db.query(
           `INSERT INTO member (email, member_name, google_id, password, national, gender, birth, phone_agency, phone, member_address, created_date) 
-           VALUES (?, ?, ?, '', '', '', NULL, '', '', '', NOW())`,
+           VALUES (?, ?, ?, '', '', '', NULL, '', NULL, '', NOW())`,
           [email || `google_${id}@temp.com`, displayName || '구글사용자', id]
         );
 
@@ -173,7 +174,7 @@ router.get('/naver/callback',
   (req, res) => {
     // 로그인 성공
     const user = {
-      member_num: req.user.member_num,
+      id: req.user.member_num,
       email: req.user.email,
       member_name: req.user.member_name
     };
@@ -195,7 +196,7 @@ router.get('/kakao/callback',
   (req, res) => {
     // 로그인 성공
     const user = {
-      member_num: req.user.member_num,
+      id: req.user.member_num,
       email: req.user.email,
       member_name: req.user.member_name
     };
@@ -219,7 +220,7 @@ router.get('/google/callback',
   (req, res) => {
     // 로그인 성공
     const user = {
-      member_num: req.user.member_num,
+      id: req.user.member_num,
       email: req.user.email,
       member_name: req.user.member_name
     };
