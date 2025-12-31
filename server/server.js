@@ -36,10 +36,12 @@ app.use('/images', express.static(path.join(__dirname, '..', 'images')));
 // 라우트 임포트
 const memberRoutes = require('./routes/member');
 const authRoutes = require('./routes/auth');
+const searchRoutes = require('./routes/search');
 
 // API 라우트 마운트
 app.use('/api/member', memberRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/search', searchRoutes);
 //app.use('/api/warehouse', warehouseRoutes);
 
 // 헬스 체크
